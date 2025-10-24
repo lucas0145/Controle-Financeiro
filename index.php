@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle Financeiro</title>
+</head>
+<body>
+    
+    <form action="">
+        <select name="slcAno" id="slcAno" oninput="enviar()">
+            <option value="">Ano</option>
+            <option value="2025">2025</option>
+            <!-- Auto completar com php (select group by ano e ultimo ano + 1) -->
+        </select>
+        <select name="slcMes" id="slcMes" oninput="enviar()">
+            <option value="">Mês</option>
+            <option value="1">Janeiro</option>
+            <option value="2">Fevereiro</option>
+            <option value="3">Março</option>
+            <option value="4">Abril</option>
+            <option value="5">Maio</option>
+            <option value="6">Junho</option>
+            <option value="7">Julho</option>
+            <option value="8">Agosto</option>
+            <option value="9">Setembro</option>
+            <option value="10">Outubro</option>
+            <option value="11">Novembro</option>
+            <option value="12">Dezembro</option>
+        </select>
+
+        <input type="button" value="Adicionar" onclick="openModal('modalAdd')">
+    </form>
+
+    <section id="secExibir">
+        <table>
+            <tr>
+                <td>Descrição</td>
+                <td>Valor</td>
+                <td>Data</td>
+                <td>Parcela</td>
+                <td>X</td>
+            </tr>
+
+            <?php
+                error_reporting(0);
+                session_start();
+                include_once("PHP/conn.php");
+                $sql = $_SESSION['sql'];
+
+                // echo "select * from tbl_financas ".$sql;
+                //Pega as informaçoes no banco de dados
+                $result = mysqli_query($conn, "select * from tbl_financas ".$sql);
+
+
+                //Recebe as informaçoes do banco de dados
+                while($row = $result->fetch_assoc()) {
+                    
+                    echo"
+                    <tr>
+                        <td>".$row['descricao']."</td>
+                        <td>R$ ".$row['valor']."</td>
+                        <td>".$row['dia']."/".$row['mes']."/".$row['ano']."</td>
+                        <td>".$row['parcela']."</td>
+                        <td>X</td>
+                    </tr>";
+                }
+            ?>
+        </table>
+    </section>
+
+    <dialog id="modalExc">
+
+    </dialog>
+    <dialog id="modalAdd">
+        <p>aaaaaaaaaa</p>
+    </dialog>
+
+    <script src="script.js"></script>
+</body>
+</html>
