@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <link rel="stylesheet" href="style.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Controle Financeiro</title>
 </head>
+
 <body>
-    
+
     <form action="">
         <select name="slcAno" id="slcAno" oninput="enviar()">
             <option value="">Ano</option>
@@ -44,28 +46,28 @@
             </tr>
 
             <?php
-                error_reporting(0);
-                session_start();
-                include_once("PHP/conn.php");
-                $sql = $_SESSION['sql'];
+            error_reporting(0);
+            session_start();
+            include_once("PHP/conn.php");
+            $sql = $_SESSION['sql'];
 
-                // echo "select * from tbl_financas ".$sql;
-                //Pega as informaçoes no banco de dados
-                $result = mysqli_query($conn, "select * from tbl_financas ".$sql);
+            // echo "select * from tbl_financas ".$sql;
+            //Pega as informaçoes no banco de dados
+            $result = mysqli_query($conn, "select * from tbl_financas " . $sql);
 
 
-                //Recebe as informaçoes do banco de dados
-                while($row = $result->fetch_assoc()) {
-                    
-                    echo"
+            //Recebe as informaçoes do banco de dados
+            while ($row = $result->fetch_assoc()) {
+
+                echo "
                     <tr>
-                        <td>".$row['descricao']."</td>
-                        <td>R$ ".$row['valor']."</td>
-                        <td>".$row['dia']."/".$row['mes']."/".$row['ano']."</td>
-                        <td>".$row['parcela']."</td>
+                        <td>" . $row['descricao'] . "</td>
+                        <td>R$ " . $row['valor'] . "</td>
+                        <td>" . $row['dia'] . "/" . $row['mes'] . "/" . $row['ano'] . "</td>
+                        <td>" . $row['parcela'] . "</td>
                         <td>X</td>
                     </tr>";
-                }
+            }
             ?>
         </table>
     </section>
@@ -74,9 +76,21 @@
 
     </dialog>
     <dialog id="modalAdd">
-        <p>aaaaaaaaaa</p>
+        <form action="">
+            <label for="">Descrição</label>
+            <input type="text">
+            <label for="">Data</label>
+            <input type="datetime-local" name="" id="">
+            <label for="">Parcelas</label>
+            <input type="number">
+            <label for="">Valor</label>
+            <input type="text" name="valor" id="">
+
+            <input type="submit" value="Enviar">
+        </form>
     </dialog>
 
     <script src="script.js"></script>
 </body>
+
 </html>
