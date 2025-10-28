@@ -1,3 +1,8 @@
+<?php
+    date_default_timezone_set('America/Sao_Paulo');
+    $data = date('Y-m-d H:i');
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -12,12 +17,12 @@
 
     <form action="">
         <select name="slcAno" id="slcAno" oninput="enviar()">
-            <option value="">Ano</option>
+            <option value="0000">Ano</option>
             <option value="2025">2025</option>
             <!-- Auto completar com php (select group by ano e ultimo ano + 1) -->
         </select>
         <select name="slcMes" id="slcMes" oninput="enviar()">
-            <option value="">Mês</option>
+            <option value="00">Mês</option>
             <option value="1">Janeiro</option>
             <option value="2">Fevereiro</option>
             <option value="3">Março</option>
@@ -50,10 +55,9 @@
             session_start();
             include_once("PHP/conn.php");
             $sql = $_SESSION['sql'];
-
-            // echo "select * from tbl_financas ".$sql;
+            
             //Pega as informaçoes no banco de dados
-            $result = mysqli_query($conn, "select * from tbl_financas " . $sql);
+            $result = mysqli_query($conn, "select * from tbl_financas " . $sql . " order by data");
 
 
             //Recebe as informaçoes do banco de dados
@@ -63,9 +67,9 @@
                     <tr>
                         <td>" . $row['descricao'] . "</td>
                         <td>R$ " . $row['valor'] . "</td>
-                        <td>" . $row['dia'] . "/" . $row['mes'] . "/" . $row['ano'] . "</td>
+                        <td>"; $dateObj = new DateTime($row['data']); echo $dateObj->format('d/m/Y H:i')."</td>
                         <td>" . $row['parcela'] . "</td>
-                        <td>X</td>
+                        <td onclick='excluirFnc(".$row['id'].")'>X</td>
                     </tr>";
             }
             ?>
@@ -75,18 +79,19 @@
     <dialog id="modalExc">
 
     </dialog>
-    <dialog id="modalAdd">
-        <form action="">
-            <label for="">Descrição</label>
-            <input type="text">
-            <label for="">Data</label>
-            <input type="datetime-local" name="" id="">
-            <label for="">Parcelas</label>
-            <input type="number">
-            <label for="">Valor</label>
-            <input type="text" name="valor" id="">
 
-            <input type="submit" value="Enviar">
+    <dialog id="modalAdd">
+        <form action="PHP/adicionar.php" method="post">
+            <label for="">Descrição</label>
+            <input type="text" name="desc" required>
+            <label for="">Data</label>
+            <input type="datetime-local" name="data" id="inpData" value="<?php echo $data?>" required>
+            <label for="">Parcelas</label>
+            <input type="number" value="0" name="parcelas" oninput="formatParcela(this)" maxlength="2" required>
+            <label for="">Valor</label>
+            <input type="number" name="valor" id="" step="0.01" required>
+
+            <input type="submit" value="Enviar" name="submit" onclick="closeOpen('modalAdd')">
         </form>
     </dialog>
 

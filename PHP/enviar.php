@@ -11,15 +11,20 @@
             $ano = $selectData[0];
             $mes = $selectData[1];
 
-            echo $ano ."--". $mes;
+            echo $ano ."--". $mes . "<br>";
 
-            if ($ano != "" && $mes != "") {
-                $sql = "where ano = '".$ano."' and mes = '".$mes."'";
-            }elseif ($mes == "" && $ano != "") {
-                $sql = "where ano = '".$ano."'";
-            }elseif ($ano == "" && $mes != "") {
-                $sql = "where mes = '".$mes."'";
+            if ($ano > 0 && $mes > 0) {
+        
+                $sql = "where data between '" . $ano ."-". $mes . "-00' and '". $ano . "-" . $mes . "-31'";
+            }elseif ($ano > 0 && $mes == 0) {
+                $sql = "where data between '" . $ano ."-". $mes . "-00' and '". $ano . "-12-31'";
+            }elseif ($ano == 0 && $mes > 0) {
+                $sql = "where data between '0000-". $mes . "-00' and '9999-" . $mes . "-31'";
+            }elseif ($ano == 0 && $mes == 0) {
+                $sql = "";
             }
+
+            echo $sql;
 
             session_start();
 
