@@ -18,9 +18,31 @@
     <form action="">
         <select name="slcAno" id="slcAno" oninput="enviar()">
             <option value="0000">Ano</option>
-            <option value="2025">2025</option>
-            <!-- Auto completar com php (select group by ano e ultimo ano + 1) -->
+
+            <?php
+
+                include_once('PHP/conn.php');
+                $result = mysqli_query($conn, "select * from tbl_financas order by data");
+
+                while ($row = $result->fetch_assoc()) {
+
+                    $ano = substr($row["data"], 0,4);
+
+                    if ($ano != $anoBf) {
+                        echo "<option value=".$ano.">$ano</option>";
+                    }
+
+                    $anoBf = $ano;
+                }
+
+                // Codigo que eu nao se se eu adiciono ou nao
+                // Codigo para sempre mostrar o proximo ano no filtro mesmo que esteja sem gastos
+                // $ano += 1;
+                // echo "<option value=".$ano.">$ano</option>";
+            ?>
+
         </select>
+
         <select name="slcMes" id="slcMes" oninput="enviar()">
             <option value="00">Mês</option>
             <option value="1">Janeiro</option>
@@ -40,6 +62,16 @@
         <input type="button" value="Adicionar" onclick="openModal('modalAdd')">
     </form>
 
+    <section id="secTotal">
+        <h1>
+            Total: R$ <?php 
+                $result = mysqli_query($conn, "select sum(valor) from db_CF.tbl_financas");
+                $row = $result->fetch_assoc(); 
+                echo $row['sum(valor)'];
+            ?>
+        </h1>
+    </section>
+
     <section id="secExibir">
         <table>
             <tr>
@@ -47,32 +79,54 @@
                 <td>Valor</td>
                 <td>Data</td>
                 <td>Parcela</td>
-                <td>X</td>
+                <td>Delete</td>
             </tr>
 
             <?php
-            error_reporting(0);
-            session_start();
-            include_once("PHP/conn.php");
-            $sql = $_SESSION['sql'];
-            
-            //Pega as informaçoes no banco de dados
-            $result = mysqli_query($conn, "select * from tbl_financas " . $sql . " order by data");
+                error_reporting(0);
+                session_start();
+                include_once("PHP/conn.php");
+                $sql = $_SESSION['sql'];
+                
+                //Pega as informaçoes no banco de dados
+                $result = mysqli_query($conn, "select * from tbl_financas " . $sql . " order by data");
 
 
-            //Recebe as informaçoes do banco de dados
-            while ($row = $result->fetch_assoc()) {
+                //Recebe as informaçoes do banco de dados
+                while ($row = $result->fetch_assoc()) {
 
-                echo "
-                    <tr>
-                        <td>" . $row['descricao'] . "</td>
-                        <td>R$ " . $row['valor'] . "</td>
-                        <td>"; $dateObj = new DateTime($row['data']); echo $dateObj->format('d/m/Y H:i')."</td>
-                        <td>" . $row['parcela'] . "</td>
-                        <td onclick='excluirFnc(".$row['id'].")'>X</td>
-                    </tr>";
-            }
+                    if ($row['parcela'] == 0) {
+
+                        echo "
+                            <tr>
+                                <td>" . $row['descricao'] . "</td>
+                                <td>R$ " . $row['valor'] . "</td>
+                                <td>"; $dateObj = new DateTime($row['data']); echo $dateObj->format('d/m/Y H:i')."</td>
+                                <td>À vista</td>
+                                <td onclick='excluirFnc(".$row['id'].")'>X</td>
+                            </tr>";
+
+                    }elseif ($row['parcela'] > 0) {
+
+                        $valor = $row['valor'] / $row['parcela'];
+                    
+                        for ($i=0; $i < $row['parcela']; $i++) { 
+
+                            echo "
+                            <tr>
+                                <td>" . $row['descricao'] . "</td>
+                                <td>R$ " . $valor . "</td>
+                                <td>"; $dateObj = new DateTime($row['data']); echo $dateObj->format('d/m/Y H:i')."</td>
+                                <td>" . $i+1 ." de ". $row['parcela'] . "</td>
+                                <td onclick='excluirFnc(".$row['id'].")'>X</td>
+                            </tr>";
+
+                            $dateObj->modify('+1 month');
+                        }
+                    }
+                }
             ?>
+        
         </table>
     </section>
 

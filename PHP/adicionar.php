@@ -15,22 +15,7 @@
             $result = mysqli_query($conn, "insert into tbl_financas(id, descricao, valor, parcela, data) values (null, '$descR', '$valorR', '$pacelasR', '$data')");
         }else {
             
-            $valorR = $valorR / $pacelasR;
-
-            if ($valorR > 0) {
-                
-                for ($i=0; $i < $pacelasR; $i++) { 
-
-                    $data = (string) $dateObj->format('Y-m-d H:i:s');
-
-                    $result = mysqli_query($conn, "insert into tbl_financas(id, descricao, valor, parcela, data) values (null, '$descR', '$valorR', '".$i+1 ." de ". $pacelasR."', '$data')");
-
-                    echo $result;
-
-                    $dateObj->modify('+1 month');
-                }
-            }
-
+            $result = mysqli_query($conn, "insert into tbl_financas(id, descricao, valor, parcela, data) values (null, '$descR', '$valorR', '$pacelasR', '$data')");
         }
 
         header("Location: ../index.php");

@@ -38,6 +38,18 @@ body {
 
     }
 
+    #secTotal{
+        width: 70vw;
+        height: 12vb;
+        display: flex;
+        align-items: center;
+        border: green 4px solid;
+        border-radius: 25px;
+        padding: 1% 3%;
+        margin: 6vb 15vw;
+        font-size: 1rem;
+    }
+
     #secExibir {
         width: 70vw;
         margin: 0 15vw;
@@ -52,6 +64,10 @@ body {
             tr:first-child {
                 background-color: rgb(109, 255, 109);
                 font-weight: bold;
+
+                td{
+                    cursor: default;
+                }
             }
 
             tr {
